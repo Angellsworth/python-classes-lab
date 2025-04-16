@@ -9,6 +9,11 @@ class Game: #I am creating a blueprint
             'a2': None, 'b2': None, 'c2': None,
             'a3': None, 'b3': None, 'c3': None,
             }
+        #track wins and ties
+        self.x_wins = 0
+        self.o_wins = 0
+        self.ties = 0
+
 # Step 2) Start Game play    
     #Method to start game play
     def play_game(self):
@@ -25,6 +30,7 @@ class Game: #I am creating a blueprint
                 
         self.print_board() #update board
         self.print_message()
+        self.print_scoreboard() #print scoreboard
         
 
 # Step 3) Print board
@@ -70,13 +76,42 @@ class Game: #I am creating a blueprint
         for combo in combos:
             if self.board[combo[0]] == self.board[combo[1]] == self.board[combo[2]] != None: #are spaces equal? if yes win, if not move on
                 self.winner = self.turn #record winner on whose turn it was
+                if self.turn == 'X':
+                    self.x_wins += 1 #add to x
+                else:
+                    self.o_wins =+ 1 #add to o
 # Step 8) Check for tie
     def check_for_tie(self):
         if not self.winner and all(space is not None for space in self.board.values()):#if spaces are filled but don't match
             self.tie = True #flip to tie
-
+            self.ties += 1 #add 1 to tie
+# Step 9) Print wins and ties
+    def print_scoreboard(self):
+        print("\n Final Scoreboard:")
+        print(f"Player X Wins: {self.x_wins}")
+        print(f"Player O Wins: {self.o_wins}")
+        print(f"Tie Games  : {self.ties}")
+        print("-" * 25)
     
 #Instantiate and start the game
 game_instance = Game()
 game_instance.play_game()#calls welcome message
+
+#Game Loop
+while True:
+    game_instance.play_game()
+
+    play_again = input("\nWould you like to play again? (y/n): ").lower()
+    if play_again != 'y':
+        print("Thanks for playing! Goodbye.")
+        break
+    else: #reset board
+        game_instance.board = {
+            'a1': None, 'b1': None, 'c1': None,
+            'a2': None, 'b2': None, 'c2': None,
+            'a3': None, 'b3': None, 'c3': None,
+        }
+        game_instance.winner = None
+        game_instance.tie = False
+        game_instance.turn = 'X'
 
